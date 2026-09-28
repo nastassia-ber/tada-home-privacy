@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ta-Da Home · Email confirmed</title>
+<meta name="description" content="Your email address is confirmed. Go back to Ta-Da Home and sign in.">
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --bg: #F7F6FB; --surface: #FFFFFF; --ink: #2E2B3A; --ink2: #4A4659;
+    --muted: #6D697E; --line: #ECE9F3; --accent: #6A5CC2; --tint: #ECE8FD;
+    --mint: #1F6B52; --mint-tint: #DDF5EC; --rose: #A8354A; --rose-tint: #FCE3E6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17151F; --surface: #211E2B; --ink: #F1EFF7; --ink2: #D2CEE0;
+      --muted: #A7A2B8; --line: #332F40; --accent: #B3A8FF; --tint: #2A2540;
+      --mint: #8FE0C2; --mint-tint: #1B3B31; --rose: #F2A9B6; --rose-tint: #3B2028;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink2);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 560px; margin: 0 auto; padding: 56px 16px 64px; }
+  h1 { color: var(--ink); font-size: 34px; line-height: 1.15; margin: 0 0 10px; }
+  .mark {
+    width: 64px; height: 64px; border-radius: 20px; background: var(--mint-tint);
+    color: var(--mint); display: grid; place-items: center; font-size: 34px;
+    margin-bottom: 22px;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 22px;
+    padding: 20px 22px; margin: 26px 0;
+  }
+  .card h2 { color: var(--ink); font-size: 17px; margin: 0 0 6px; }
+  .card p { margin: 0; color: var(--muted); font-size: 16px; }
+  a { color: var(--accent); }
+  footer {
+    color: var(--muted); font-size: 15px; margin-top: 40px;
+    border-top: 1px solid var(--line); padding-top: 18px;
+  }
+  .problem { display: none; }
+  .problem .mark { background: var(--rose-tint); color: var(--rose); }
+  body.has-problem .ok { display: none; }
+  body.has-problem .problem { display: block; }
+</style>
+</head>
+<body>
+<main>
+  <section class="ok">
+    <div class="mark" aria-hidden="true">✓</div>
+    <h1>Your email is confirmed</h1>
+    <p>That is the whole of it. Go back to <strong>Ta-Da Home</strong> on your
+    iPhone and sign in with the email and password you just chose.</p>
+
+    <div class="card">
+      <h2>What happens next</h2>
+      <p>Your home is copied to your account, so a lost phone is no longer a
+      lost home — and the people you live with can join it. Photos stay on your
+      phone and are never uploaded.</p>
+    </div>
+
+    <p>You can close this page.</p>
+  </section>
+
+  <section class="problem">
+    <div class="mark" aria-hidden="true">!</div>
+    <h1>That link has expired</h1>
+    <p id="why">Confirmation links only last a day or so, and each one can be
+    used once.</p>
+
+    <div class="card">
+      <h2>What to do</h2>
+      <p>Open Ta-Da Home, go to <strong>Rooms → Cloud backup &amp; family</strong>,
+      enter the same email address, and choose <strong>Send it again</strong>.
+      A fresh link will arrive in a minute or two.</p>
+    </div>
+
+    <p>Still stuck? Write to
+    <a href="mailto:info@yourluni.com">info@yourluni.com</a> and we will sort
+    it out.</p>
+  </section>
+
+  <footer>
+    <a href="./">Privacy policy</a> · <a href="./support.html">Support</a><br>
+    Ta-Da Home · Luni, Leliestraat 31, 2011 BL Haarlem, Netherlands ·
+    KvK 94418691
+  </footer>
+</main>
+
+<script>
+  // Supabase reports a failed link in the query string or the hash fragment.
+  // Anything else means the confirmation worked, so success is the default
+  // and this only ever switches the page to the honest version.
+  (function () {
+    var source = window.location.hash.slice(1) + '&' + window.location.search.slice(1);
+    var params = new URLSearchParams(source);
+    var error = params.get('error') || params.get('error_code');
+    if (!error) return;
+    document.body.classList.add('has-problem');
+    var described = params.get('error_description');
+    if (described) {
+      document.getElementById('why').textContent =
+        described.replace(/\+/g, ' ') + '.';
+    }
+    document.title = 'Ta-Da Home · That link has expired';
+  })();
+</script>
+</body>
+</html>
